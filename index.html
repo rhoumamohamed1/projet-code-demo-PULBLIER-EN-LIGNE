@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bootcamp Claude — Studeria</title>
+  <meta name="description" content="Bootcamp Claude : une journée en ligne pour passer de l'usage curieux à l'usage productif. Samedi 16 janvier 2027, 10h–18h. Organisé par Studeria, certifié Qualiopi.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { DEFAULT: '#534AB7', dark: '#433B96', light: '#EEEDF8' },
+            ink: { DEFAULT: '#1F2A44', soft: '#4B5568', muted: '#6B7385' },
+            accent: { DEFAULT: '#F97316', dark: '#EA580C' },
+            paper: '#FAFAFA',
+            line: '#E6E7EB'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+    body { -webkit-font-smoothing: antialiased; }
+
+    /* Fade-in au scroll : actif uniquement si le JS a tourné (classe .js sur <html>) */
+    .js .reveal { opacity: 0; transform: translateY(16px); transition: opacity .7s ease, transform .7s ease; }
+    .js .reveal.visible { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .js .reveal { opacity: 1; transform: none; transition: none; }
+    }
+  </style>
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body class="bg-paper font-sans text-ink">
+
+  <!-- Navigation -->
+  <header class="sticky top-0 z-30 border-b border-line/70 bg-white/80 backdrop-blur">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+      <a href="#" class="flex items-center gap-2 font-semibold tracking-tight">
+        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white">S</span>
+        Studeria
+      </a>
+      <nav class="hidden items-center gap-8 text-sm text-ink-soft md:flex">
+        <a href="#programme" class="hover:text-ink">Programme</a>
+        <a href="#formateur" class="hover:text-ink">Formateur</a>
+        <a href="#infos" class="hover:text-ink">Infos pratiques</a>
+      </nav>
+      <a href="#inscription" class="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-accent-dark">Je m'inscris</a>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Hero -->
+    <section class="bg-gradient-to-b from-brand-light via-white to-paper">
+      <div class="mx-auto max-w-6xl px-4 pb-24 pt-20 sm:px-6 sm:pt-28 lg:pb-32">
+        <p class="inline-flex items-center gap-2 rounded-full border border-brand/20 bg-white/70 px-3 py-1 text-xs font-medium text-brand">
+          <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
+          Formation certifiée Qualiopi
+        </p>
+        <h1 class="mt-6 text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">Bootcamp Claude</h1>
+        <p class="mt-6 max-w-2xl text-xl leading-relaxed text-ink-soft sm:text-2xl">Une journée pour passer de l'usage curieux à l'usage productif</p>
+
+        <dl class="mt-10 flex flex-col gap-4 text-sm sm:flex-row sm:gap-10">
+          <div>
+            <dt class="text-ink-muted">Date</dt>
+            <dd class="mt-0.5 text-base font-semibold">Samedi 16 janvier 2027 · 10h–18h</dd>
+          </div>
+          <div>
+            <dt class="text-ink-muted">Format</dt>
+            <dd class="mt-0.5 text-base font-semibold">100 % en ligne (Google Meet)</dd>
+          </div>
+          <div>
+            <dt class="text-ink-muted">Tarif</dt>
+            <dd class="mt-0.5 text-base font-semibold">490 € HT <span class="font-normal text-ink-muted">(588 € TTC)</span></dd>
+          </div>
+        </dl>
+
+        <div class="mt-12">
+          <a href="#inscription" class="inline-block w-full rounded-md bg-accent px-7 py-3.5 text-center font-semibold text-white shadow-lg shadow-accent/20 hover:bg-accent-dark sm:w-auto">Je m'inscris</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Barre de progression des inscriptions -->
+    <section class="bg-paper">
+      <div class="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
+        <div class="rounded-2xl border border-line bg-white p-6 sm:p-8">
+          <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+            <p class="text-lg font-semibold"><span class="places-restantes">100</span> places restantes sur 100</p>
+            <p class="text-sm text-ink-muted"><span id="places-prises">0</span> inscrits</p>
+          </div>
+          <div class="mt-4 h-3 overflow-hidden rounded-full bg-brand-light" role="progressbar" aria-label="Places réservées" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="barre-progression">
+            <div id="barre-remplissage" class="h-full w-0 rounded-full bg-gradient-to-r from-brand to-accent transition-[width] duration-1000 ease-out"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. L'arc de la journée -->
+    <section id="programme" class="bg-gray-100/70">
+      <div class="reveal mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:py-32">
+        <p class="text-sm font-semibold uppercase tracking-wide text-brand">Programme</p>
+        <h2 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">L'arc de la journée</h2>
+        <p class="mt-4 max-w-2xl leading-relaxed text-ink-soft">Trois temps, du plus simple au plus avancé. Chaque étape s'appuie sur la précédente.</p>
+
+        <div class="mt-14 grid gap-6 md:grid-cols-3">
+          <div class="rounded-2xl border border-line bg-white p-8">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-light text-brand">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h8M8 14h5m-9 6 2.5-3H19a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12z"/></svg>
+            </div>
+            <p class="mt-6 text-sm font-medium text-ink-muted">Matin</p>
+            <h3 class="mt-1 text-xl font-semibold">Converser</h3>
+            <p class="mt-3 leading-relaxed text-ink-soft">Apprendre à parler à Claude : formuler une demande, donner du contexte, itérer jusqu'au bon résultat.</p>
+          </div>
+          <div class="rounded-2xl border border-line bg-white p-8">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-light text-brand">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12a8 8 0 0 1 13.7-5.6L20 8.7M20 4v4.7h-4.7M20 12a8 8 0 0 1-13.7 5.6L4 15.3M4 20v-4.7h4.7"/></svg>
+            </div>
+            <p class="mt-6 text-sm font-medium text-ink-muted">Mi-journée</p>
+            <h3 class="mt-1 text-xl font-semibold">Déléguer</h3>
+            <p class="mt-3 leading-relaxed text-ink-soft">Automatiser avec Cowork : confier à Claude des tâches complètes sur vos fichiers et vos outils.</p>
+          </div>
+          <div class="rounded-2xl border border-line bg-white p-8">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-light text-brand">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m8 9-3 3 3 3m8-6 3 3-3 3M13.5 6l-3 12"/></svg>
+            </div>
+            <p class="mt-6 text-sm font-medium text-ink-muted">Après-midi</p>
+            <h3 class="mt-1 text-xl font-semibold">Créer</h3>
+            <p class="mt-3 leading-relaxed text-ink-soft">Construire une app avec Claude Code : décrire un besoin et repartir avec un outil qui fonctionne.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Ce que vous allez apprendre -->
+    <section class="bg-white">
+      <div class="reveal mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:py-32">
+        <p class="text-sm font-semibold uppercase tracking-wide text-brand">Compétences</p>
+        <h2 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Ce que vous allez apprendre</h2>
+
+        <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="rounded-2xl border border-line p-7 transition hover:border-brand/40 hover:shadow-sm">
+            <svg class="h-7 w-7 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg>
+            <h3 class="mt-5 font-semibold">Prompter comme un pro</h3>
+            <p class="mt-2 leading-relaxed text-ink-soft">Structurer vos demandes pour obtenir des réponses précises et réutilisables.</p>
+          </div>
+          <div class="rounded-2xl border border-line p-7 transition hover:border-brand/40 hover:shadow-sm">
+            <svg class="h-7 w-7 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6zm0 0v6h6M8 13h8M8 17h5"/></svg>
+            <h3 class="mt-5 font-semibold">Générer des documents</h3>
+            <p class="mt-2 leading-relaxed text-ink-soft">Produire des fichiers Word, Excel et PowerPoint prêts à être relus et partagés.</p>
+          </div>
+          <div class="rounded-2xl border border-line p-7 transition hover:border-brand/40 hover:shadow-sm">
+            <svg class="h-7 w-7 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 20V10m6 10V4m6 16v-7m4 7H2"/></svg>
+            <h3 class="mt-5 font-semibold">Créer des dashboards vivants</h3>
+            <p class="mt-2 leading-relaxed text-ink-soft">Transformer vos données en tableaux de bord interactifs, mis à jour simplement.</p>
+          </div>
+          <div class="rounded-2xl border border-line p-7 transition hover:border-brand/40 hover:shadow-sm">
+            <svg class="h-7 w-7 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5V12l3 2"/></svg>
+            <h3 class="mt-5 font-semibold">Automatiser vos routines</h3>
+            <p class="mt-2 leading-relaxed text-ink-soft">Confier les tâches répétitives : tri d'e-mails, comptes rendus, brief du matin.</p>
+          </div>
+          <div class="rounded-2xl border border-line p-7 transition hover:border-brand/40 hover:shadow-sm">
+            <svg class="h-7 w-7 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg>
+            <h3 class="mt-5 font-semibold">Construire une app sans coder</h3>
+            <p class="mt-2 leading-relaxed text-ink-soft">Décrire un outil en français et le voir prendre forme avec Claude Code.</p>
+          </div>
+          <div class="rounded-2xl border border-line p-7 transition hover:border-brand/40 hover:shadow-sm">
+            <svg class="h-7 w-7 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3zm-3 9 2 2 4-4"/></svg>
+            <h3 class="mt-5 font-semibold">Maîtriser les limites et la sécurité</h3>
+            <p class="mt-2 leading-relaxed text-ink-soft">Savoir quand vérifier, quelles données ne pas partager et comment garder la main.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Témoignages -->
+    <section class="bg-paper">
+      <div class="reveal mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:py-32">
+        <p class="text-sm font-semibold uppercase tracking-wide text-brand">Témoignages</p>
+        <h2 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Ils ont suivi le bootcamp</h2>
+
+        <div class="mt-14 grid gap-6 md:grid-cols-3">
+          <figure class="flex flex-col rounded-2xl border border-line bg-white p-8">
+            <svg class="h-6 w-6 text-brand/30" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 7H6a2 2 0 0 0-2 2v4h4v4H4m16-10h-4a2 2 0 0 0-2 2v4h4v4h-4"/></svg>
+            <blockquote class="mt-4 flex-1 text-lg leading-relaxed">« J'ai gagné 2h par jour sur la gestion de mes emails et documents. »</blockquote>
+            <figcaption class="mt-8 flex items-center gap-3 border-t border-line pt-5 text-sm">
+              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-light font-semibold text-brand">MD</span>
+              <span><span class="block font-semibold">Marie D.</span><span class="text-ink-muted">Office manager, Atelier Verneuil</span></span>
+            </figcaption>
+          </figure>
+          <figure class="flex flex-col rounded-2xl border border-line bg-white p-8">
+            <svg class="h-6 w-6 text-brand/30" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 7H6a2 2 0 0 0-2 2v4h4v4H4m16-10h-4a2 2 0 0 0-2 2v4h4v4h-4"/></svg>
+            <blockquote class="mt-4 flex-1 text-lg leading-relaxed">« J'ai construit un outil de devis pour mon équipe en 30 minutes. »</blockquote>
+            <figcaption class="mt-8 flex items-center gap-3 border-t border-line pt-5 text-sm">
+              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-light font-semibold text-brand">TR</span>
+              <span><span class="block font-semibold">Thomas R.</span><span class="text-ink-muted">Consultant, Cabinet Leroux Conseil</span></span>
+            </figcaption>
+          </figure>
+          <figure class="flex flex-col rounded-2xl border border-line bg-white p-8">
+            <svg class="h-6 w-6 text-brand/30" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 7H6a2 2 0 0 0-2 2v4h4v4H4m16-10h-4a2 2 0 0 0-2 2v4h4v4h-4"/></svg>
+            <blockquote class="mt-4 flex-1 text-lg leading-relaxed">« Le brief matinal automatique a changé ma façon de commencer la journée. »</blockquote>
+            <figcaption class="mt-8 flex items-center gap-3 border-t border-line pt-5 text-sm">
+              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-light font-semibold text-brand">SL</span>
+              <span><span class="block font-semibold">Sophie L.</span><span class="text-ink-muted">Directrice RH, Groupe Altéa Services</span></span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Le formateur -->
+    <section id="formateur" class="bg-white">
+      <div class="reveal mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:py-32">
+        <p class="text-sm font-semibold uppercase tracking-wide text-brand">Le formateur</p>
+        <div class="mt-10 flex flex-col items-start gap-8 sm:flex-row sm:items-center sm:gap-12">
+          <div class="flex h-32 w-32 shrink-0 items-center justify-center rounded-full bg-gray-200 text-3xl font-semibold text-ink-muted sm:h-40 sm:w-40 sm:text-4xl" aria-hidden="true">RM</div>
+          <div class="max-w-2xl">
+            <h2 class="text-3xl font-bold tracking-tight">Rhouma Mohamed</h2>
+            <p class="mt-1 text-ink-muted">Co-fondateur d'IA INFINITY · Formateur Studeria</p>
+            <p class="mt-5 text-lg leading-relaxed text-ink-soft">Co-fondateur d'IA INFINITY, agence spécialisée en IA et automatisation. Formateur certifié Qualiopi via Studeria. Accompagne les professionnels dans leur montée en compétence IA depuis 2023.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Informations pratiques -->
+    <section id="infos" class="bg-paper">
+      <div class="reveal mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:py-32">
+        <p class="text-sm font-semibold uppercase tracking-wide text-brand">En pratique</p>
+        <h2 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Informations pratiques</h2>
+
+        <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-2xl border border-line bg-white p-7">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path stroke-linecap="round" d="M3 10h18M8 3v4m8-4v4"/></svg>
+            <p class="mt-5 text-sm text-ink-muted">Date</p>
+            <p class="mt-1 text-lg font-semibold">16 janvier 2027</p>
+            <p class="text-sm text-ink-soft">Samedi, 10h00 – 18h00</p>
+          </div>
+          <div class="rounded-2xl border border-line bg-white p-7">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="14" height="12" rx="2"/><path stroke-linejoin="round" d="m16 10 6-3v10l-6-3"/></svg>
+            <p class="mt-5 text-sm text-ink-muted">Format</p>
+            <p class="mt-1 text-lg font-semibold">En ligne</p>
+            <p class="text-sm text-ink-soft">En direct sur Google Meet</p>
+          </div>
+          <div class="rounded-2xl border border-line bg-white p-7">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5V12l3 2"/></svg>
+            <p class="mt-5 text-sm text-ink-muted">Durée</p>
+            <p class="mt-1 text-lg font-semibold">7 heures</p>
+            <p class="text-sm text-ink-soft">Pause déjeuner d'une heure</p>
+          </div>
+          <div class="rounded-2xl border border-line bg-white p-7">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 6.5A6.5 6.5 0 1 0 17 17.5M4 10.5h9M4 13.5h9"/></svg>
+            <p class="mt-5 text-sm text-ink-muted">Tarif</p>
+            <p class="mt-1 text-lg font-semibold">490 € HT</p>
+            <p class="text-sm text-ink-soft">soit 588 € TTC</p>
+          </div>
+        </div>
+
+        <p class="mt-8 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand-light px-4 py-2 text-sm font-medium text-brand">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 12 4.5 4.5L19 7"/></svg>
+          Qualiopi — financement OPCO possible
+        </p>
+      </div>
+    </section>
+
+    <!-- Formulaire d'inscription -->
+    <section id="inscription" class="border-t border-line bg-white">
+      <div class="reveal mx-auto max-w-2xl px-4 py-24 sm:px-6 lg:py-32">
+        <p class="text-sm font-semibold uppercase tracking-wide text-brand">Inscription</p>
+        <h2 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Réservez votre place</h2>
+        <p class="mt-4 inline-flex items-center gap-2 text-ink-soft">
+          <span class="h-2 w-2 rounded-full bg-accent"></span>
+          <span><span class="places-restantes font-semibold text-ink">100</span> places restantes sur 100</span>
+        </p>
+
+        <form id="form-inscription" class="mt-10 space-y-5 rounded-2xl border border-line bg-paper p-6 sm:p-8" novalidate>
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="prenom" class="block text-sm font-medium">Prénom *</label>
+              <input id="prenom" name="prenom" type="text" autocomplete="given-name" required class="mt-1.5 w-full rounded-md border border-line bg-white px-3 py-2.5 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20">
+            </div>
+            <div>
+              <label for="nom" class="block text-sm font-medium">Nom *</label>
+              <input id="nom" name="nom" type="text" autocomplete="family-name" required class="mt-1.5 w-full rounded-md border border-line bg-white px-3 py-2.5 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20">
+            </div>
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-medium">E-mail *</label>
+            <input id="email" name="email" type="email" autocomplete="email" required class="mt-1.5 w-full rounded-md border border-line bg-white px-3 py-2.5 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20">
+          </div>
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="entreprise" class="block text-sm font-medium">Entreprise *</label>
+              <input id="entreprise" name="entreprise" type="text" autocomplete="organization" required class="mt-1.5 w-full rounded-md border border-line bg-white px-3 py-2.5 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20">
+            </div>
+            <div>
+              <label for="poste" class="block text-sm font-medium">Poste *</label>
+              <input id="poste" name="poste" type="text" autocomplete="organization-title" required class="mt-1.5 w-full rounded-md border border-line bg-white px-3 py-2.5 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20">
+            </div>
+          </div>
+          <div>
+            <label for="telephone" class="block text-sm font-medium">Téléphone <span class="font-normal text-ink-muted">(optionnel)</span></label>
+            <input id="telephone" name="telephone" type="tel" autocomplete="tel" class="mt-1.5 w-full rounded-md border border-line bg-white px-3 py-2.5 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20">
+          </div>
+
+          <p id="avertissement-stockage" class="hidden rounded-md bg-amber-50 px-4 py-3 text-sm text-amber-800">Mode démonstration : votre navigateur bloque le stockage local pour cette page. Les inscriptions fonctionnent mais seront perdues au rechargement. Pour les conserver, ouvrez la page via un serveur web (http://…).</p>
+
+          <p id="form-erreur" class="hidden rounded-md bg-red-50 px-4 py-3 text-sm text-red-700" role="alert"></p>
+
+          <button type="submit" class="w-full rounded-md bg-accent px-6 py-3.5 font-semibold text-white shadow-lg shadow-accent/20 hover:bg-accent-dark disabled:cursor-not-allowed disabled:opacity-50">Valider mon inscription</button>
+          <p class="text-xs text-ink-muted">* Champs obligatoires</p>
+        </form>
+
+        <div id="confirmation" class="mt-10 hidden rounded-2xl border border-brand/30 bg-brand-light p-6 sm:p-8" role="status">
+          <p class="text-lg font-semibold text-brand">Inscription enregistrée</p>
+          <p class="mt-2 leading-relaxed text-ink-soft">Merci <span id="confirmation-prenom" class="font-medium text-ink"></span>, votre place pour le Bootcamp Claude du samedi 16 janvier 2027 est réservée.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-line bg-paper">
+    <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-10 text-sm text-ink-muted sm:flex-row sm:justify-between sm:px-6">
+      <p>RMA · Studeria, organisme de formation certifié Qualiopi</p>
+      <p class="flex gap-6">
+        <a href="#" class="hover:text-ink">CGV</a>
+        <a href="#" class="hover:text-ink">Mentions légales</a>
+        <button type="button" id="admin-ouvrir" class="text-ink-muted/60 hover:text-ink" aria-expanded="false" aria-controls="admin">Accès admin</button>
+      </p>
+    </div>
+
+    <!-- Liste des inscrits (admin) -->
+    <div id="admin" class="hidden border-t border-line bg-white">
+      <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 class="text-xl font-semibold">Liste des inscrits</h2>
+            <p class="mt-1 text-sm text-ink-muted"><span id="admin-total">0</span> inscription(s) enregistrée(s) dans ce navigateur</p>
+          </div>
+          <div class="flex gap-3">
+            <button type="button" id="admin-export" class="rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50">Exporter en CSV</button>
+            <button type="button" id="admin-fermer" class="rounded-md border border-line px-4 py-2 text-sm font-medium hover:border-ink-muted">Fermer</button>
+          </div>
+        </div>
+        <div class="mt-6 overflow-x-auto rounded-xl border border-line">
+          <table class="w-full min-w-[640px] text-left text-sm">
+            <thead class="bg-paper text-xs uppercase tracking-wide text-ink-muted">
+              <tr>
+                <th class="px-4 py-3 font-medium">Prénom</th>
+                <th class="px-4 py-3 font-medium">Nom</th>
+                <th class="px-4 py-3 font-medium">E-mail</th>
+                <th class="px-4 py-3 font-medium">Entreprise</th>
+                <th class="px-4 py-3 font-medium">Date d'inscription</th>
+              </tr>
+            </thead>
+            <tbody id="admin-lignes" class="divide-y divide-line"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var CLE_STOCKAGE = 'bootcamp_claude_inscriptions';
+      var CAPACITE = 100;
+
+      var form = document.getElementById('form-inscription');
+      var erreur = document.getElementById('form-erreur');
+
+      // Certains contextes bloquent localStorage (fichier ouvert en local, aperçu, navigation privée stricte).
+      // Dans ce cas on garde les inscriptions en mémoire : elles sont perdues au rechargement de la page.
+      var stockageDispo = (function () {
+        try {
+          localStorage.setItem('__test__', '1');
+          localStorage.removeItem('__test__');
+          return true;
+        } catch (e) {
+          return false;
+        }
+      })();
+      var memoire = [];
+
+      if (!stockageDispo) {
+        document.getElementById('avertissement-stockage').classList.remove('hidden');
+      }
+
+      function enregistrerInscriptions(liste) {
+        if (stockageDispo) {
+          localStorage.setItem(CLE_STOCKAGE, JSON.stringify(liste));
+        } else {
+          memoire = liste;
+        }
+      }
+
+      function lireInscriptions() {
+        if (!stockageDispo) return memoire.slice();
+        try {
+          var liste = JSON.parse(localStorage.getItem(CLE_STOCKAGE) || '[]');
+          return Array.isArray(liste) ? liste : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function afficherErreur(message) {
+        erreur.textContent = message;
+        erreur.classList.remove('hidden');
+      }
+
+      var compteurAffiche = CAPACITE;
+
+      // Fait défiler les chiffres de la valeur affichée vers la nouvelle valeur
+      function animerChiffres(cible) {
+        var depart = compteurAffiche;
+        var debut = Date.now();
+        var duree = 1000;
+        compteurAffiche = cible;
+        var reduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        // setTimeout plutôt que requestAnimationFrame : ce dernier est suspendu quand la page n'est pas affichée
+        function etape() {
+          var p = reduit ? 1 : Math.min(1, (Date.now() - debut) / duree);
+          var valeur = Math.round(depart + (cible - depart) * (1 - Math.pow(1 - p, 3)));
+          document.querySelectorAll('.places-restantes').forEach(function (el) { el.textContent = valeur; });
+          document.getElementById('places-prises').textContent = CAPACITE - valeur;
+          if (p < 1) setTimeout(etape, 16);
+        }
+        etape();
+      }
+
+      function majCompteur() {
+        var prises = Math.min(CAPACITE, lireInscriptions().length);
+        var restantes = CAPACITE - prises;
+        animerChiffres(restantes);
+        // Petit délai pour que la transition CSS se joue aussi au chargement
+        setTimeout(function () {
+          document.getElementById('barre-remplissage').style.width = (prises / CAPACITE * 100) + '%';
+        }, 50);
+        document.getElementById('barre-progression').setAttribute('aria-valuenow', prises);
+        if (restantes === 0) {
+          form.querySelector('button[type="submit"]').disabled = true;
+          afficherErreur('Le bootcamp est complet.');
+        }
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        erreur.classList.add('hidden');
+
+        var donnees = {
+          prenom: form.prenom.value.trim(),
+          nom: form.nom.value.trim(),
+          email: form.email.value.trim().toLowerCase(),
+          entreprise: form.entreprise.value.trim(),
+          poste: form.poste.value.trim(),
+          telephone: form.telephone.value.trim()
+        };
+
+        if (!donnees.prenom || !donnees.nom || !donnees.email || !donnees.entreprise || !donnees.poste) {
+          return afficherErreur('Merci de remplir tous les champs obligatoires.');
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(donnees.email)) {
+          return afficherErreur("L'adresse e-mail n'est pas valide.");
+        }
+
+        var liste = lireInscriptions();
+        if (liste.length >= CAPACITE) {
+          return afficherErreur('Le bootcamp est complet.');
+        }
+        if (liste.some(function (i) { return i.email === donnees.email; })) {
+          return afficherErreur('Une inscription existe déjà avec cette adresse e-mail.');
+        }
+
+        donnees.dateInscription = new Date().toISOString();
+        liste.push(donnees);
+        try {
+          enregistrerInscriptions(liste);
+        } catch (e) {
+          // Quota dépassé ou stockage retiré en cours de route : on bascule en mémoire
+          stockageDispo = false;
+          enregistrerInscriptions(liste);
+          document.getElementById('avertissement-stockage').classList.remove('hidden');
+        }
+
+        document.getElementById('confirmation-prenom').textContent = donnees.prenom;
+        form.classList.add('hidden');
+        document.getElementById('confirmation').classList.remove('hidden');
+        majCompteur();
+      });
+
+      majCompteur();
+
+      // Liste des inscrits (admin) — prototype : aucune protection réelle, tout est visible côté navigateur
+      var admin = document.getElementById('admin');
+      var boutonAdmin = document.getElementById('admin-ouvrir');
+      var COLONNES = [
+        ['prenom', 'Prénom'],
+        ['nom', 'Nom'],
+        ['email', 'E-mail'],
+        ['entreprise', 'Entreprise'],
+        ['dateInscription', "Date d'inscription"]
+      ];
+
+      function formaterDate(iso) {
+        var d = new Date(iso);
+        return isNaN(d) ? '' : d.toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
+      }
+
+      function afficherAdmin() {
+        var liste = lireInscriptions();
+        var tbody = document.getElementById('admin-lignes');
+        tbody.innerHTML = '';
+        document.getElementById('admin-total').textContent = liste.length;
+        document.getElementById('admin-export').disabled = liste.length === 0;
+
+        if (liste.length === 0) {
+          var vide = document.createElement('tr');
+          var cellule = document.createElement('td');
+          cellule.colSpan = COLONNES.length;
+          cellule.className = 'px-4 py-8 text-center text-ink-muted';
+          cellule.textContent = 'Aucune inscription pour le moment.';
+          vide.appendChild(cellule);
+          tbody.appendChild(vide);
+          return;
+        }
+
+        liste.forEach(function (inscrit) {
+          var ligne = document.createElement('tr');
+          COLONNES.forEach(function (col) {
+            var td = document.createElement('td');
+            td.className = 'px-4 py-3';
+            td.textContent = col[0] === 'dateInscription' ? formaterDate(inscrit[col[0]]) : (inscrit[col[0]] || '');
+            ligne.appendChild(td);
+          });
+          tbody.appendChild(ligne);
+        });
+      }
+
+      boutonAdmin.addEventListener('click', function () {
+        afficherAdmin();
+        admin.classList.remove('hidden');
+        boutonAdmin.setAttribute('aria-expanded', 'true');
+        admin.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      document.getElementById('admin-fermer').addEventListener('click', function () {
+        admin.classList.add('hidden');
+        boutonAdmin.setAttribute('aria-expanded', 'false');
+      });
+
+      // Cellule CSV : guillemets échappés, et neutralisation des formules (=, +, -, @) pour Excel
+      function celluleCsv(valeur) {
+        var texte = String(valeur == null ? '' : valeur);
+        if (/^[=+\-@\t\r]/.test(texte)) texte = "'" + texte;
+        return '"' + texte.replace(/"/g, '""') + '"';
+      }
+
+      document.getElementById('admin-export').addEventListener('click', function () {
+        var lignes = [COLONNES.map(function (c) { return celluleCsv(c[1]); }).join(';')];
+        lireInscriptions().forEach(function (inscrit) {
+          lignes.push(COLONNES.map(function (c) {
+            return celluleCsv(c[0] === 'dateInscription' ? formaterDate(inscrit[c[0]]) : inscrit[c[0]]);
+          }).join(';'));
+        });
+        // BOM UTF-8 + séparateur « ; » pour une ouverture correcte dans Excel en français
+        var blob = new Blob(['﻿' + lignes.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+        var lien = document.createElement('a');
+        lien.href = URL.createObjectURL(blob);
+        lien.download = 'inscrits-bootcamp-claude.csv';
+        document.body.appendChild(lien);
+        lien.click();
+        lien.remove();
+        URL.revokeObjectURL(lien.href);
+      });
+
+      // Fade-in des sections au scroll
+      var sections = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1 });
+        sections.forEach(function (s) { observer.observe(s); });
+      } else {
+        sections.forEach(function (s) { s.classList.add('visible'); });
+      }
+    })();
+  </script>
+</body>
+</html>
